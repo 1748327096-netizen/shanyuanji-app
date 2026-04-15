@@ -477,15 +477,23 @@
             clearTimeout(toastTimeout); toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2500);
         }
 
-        async function fetchWithRetry(url, options, maxRetries = 5) {
+        // ====== 优化点 1：引入强力阻断与超时控制的请求工具 ======
+        async function fetchWithRetry(url, options, maxRetries = 2, timeoutMs = 10000) {
             let lastErr;
             for (let i = 0; i < maxRetries; i++) {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), timeoutMs); // 核心：严格限制请求时间
                 try {
-                    const res = await fetch(url, options);
+                    const res = await fetch(url, { ...options, signal: controller.signal });
+                    clearTimeout(timeoutId);
                     if (res.ok) return await res.json();
                     const txt = await res.text(); lastErr = new Error(`HTTP ${res.status}: ${txt}`);
-                } catch (e) { lastErr = e; }
-                await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
+                } catch (e) { 
+                    clearTimeout(timeoutId);
+                    lastErr = e; 
+                }
+                // 只有不是最后一次尝试才等待重试
+                if (i < maxRetries - 1) await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
             }
             throw lastErr;
         }
@@ -512,7 +520,17 @@
         async function identifyHerb(input) {
             if (!input.files?.[0]) return;
             document.getElementById('loadingOverlay').classList.remove('hidden'); document.getElementById('loadingOverlay').classList.add('flex');
-            document.getElementById('loadingTitle').innerText = '慧眼识珠...'; document.getElementById('loadingDesc').innerText = '正在为您辨认本草...';
+            document.getElementById('loadingTitle').innerText = '慧眼识珠...'; 
+            
+            // 动态 Loading 话术
+            let loadingTexts = ["正在为您辨认本草...", "翻阅《神农本草经》..."];
+            let loadingIdx = 0;
+            document.getElementById('loadingDesc').innerText = loadingTexts[0];
+            let textInterval = setInterval(() => {
+                loadingIdx = (loadingIdx + 1) % loadingTexts.length;
+                document.getElementById('loadingDesc').innerText = loadingTexts[loadingIdx];
+            }, 1500);
+
             try {
                 if(!apiKey) throw new Error("Missing API Key");
                 const reader = new FileReader();
@@ -522,7 +540,7 @@
                     contents: [{ role: "user", parts: [{ text: "你是一位中医专家，请辨识图中草药，介绍名字和功效，约100字。" }, { inlineData: { mimeType: input.files[0].type, data: b64 } }] }],
                     generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { title: { type: "STRING" }, tag: { type: "STRING" }, content: { type: "STRING" } }, required: ["title", "tag", "content"] } }
                 };
-                const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+                const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }, 1, 15000);
                 const ans = JSON.parse(res.candidates[0].content.parts[0].text);
                 document.getElementById('aiAnswerTitle').innerText = ans.title; document.getElementById('aiAnswerTag').innerText = ans.tag; document.getElementById('aiAnswerContent').innerText = ans.content;
                 document.getElementById('modalOverlay').classList.remove('hidden'); setTimeout(() => { document.getElementById('aiAnswerModal').style.transform = 'translateY(0)'; }, 10);
@@ -533,7 +551,11 @@
                 document.getElementById('aiAnswerContent').innerText = "无法连接到 Google 视觉模型。\n可能原因：\n1. 手机网络未开启全局代理。\n2. 个人免费 API Key 权限受限。";
                 document.getElementById('modalOverlay').classList.remove('hidden'); 
                 setTimeout(() => { document.getElementById('aiAnswerModal').style.transform = 'translateY(0)'; }, 10);
-            } finally { document.getElementById('loadingOverlay').classList.add('hidden'); input.value=''; }
+            } finally { 
+                clearInterval(textInterval);
+                document.getElementById('loadingOverlay').classList.add('hidden'); 
+                input.value=''; 
+            }
         }
 
         function switchTab(id) {
@@ -562,12 +584,23 @@
         async function triggerAISearch() {
             const q = document.getElementById('aiSearchInput').value.trim(); if(!q) return showToast('请在输入框内填写问题');
             document.getElementById('loadingOverlay').classList.remove('hidden'); document.getElementById('loadingOverlay').classList.add('flex');
-            document.getElementById('loadingTitle').innerText = '翻阅典籍中...'; document.getElementById('loadingDesc').innerText = '检索中医智慧';
+            document.getElementById('loadingTitle').innerText = '翻阅典籍中...';
+            
+            // 动态 Loading 话术
+            let loadingTexts = ["检索中医智慧...", "匹配经典医案..."];
+            let loadingIdx = 0;
+            document.getElementById('loadingDesc').innerText = loadingTexts[0];
+            let textInterval = setInterval(() => {
+                loadingIdx = (loadingIdx + 1) % loadingTexts.length;
+                document.getElementById('loadingDesc').innerText = loadingTexts[loadingIdx];
+            }, 1500);
+
             try {
                 if(!apiKey) throw new Error("Missing API Key");
                 const ep = `https://generativelanguage.googleapis.com/v1beta/models/${textModel}:generateContent?key=${apiKey}`;
                 const payload = { contents: [{ parts: [{ text: `中医问答：${q}。解答温暖专业，150字内。` }] }], generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { title: { type: "STRING" }, tag: { type: "STRING" }, content: { type: "STRING" } }, required: ["title", "tag", "content"] } } };
-                const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+                // 使用 1 次重试，10秒超时限制
+                const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }, 1, 10000);
                 const ans = JSON.parse(res.candidates[0].content.parts[0].text);
                 document.getElementById('aiAnswerTitle').innerText = ans.title; document.getElementById('aiAnswerTag').innerText = ans.tag; document.getElementById('aiAnswerContent').innerText = ans.content;
                 document.getElementById('modalOverlay').classList.remove('hidden'); setTimeout(() => { document.getElementById('aiAnswerModal').style.transform = 'translateY(0)'; }, 10);
@@ -578,7 +611,10 @@
                 document.getElementById('aiAnswerContent').innerText = "无法连接到 AI 大脑。\n可能原因：\n1. 手机网络未开启全局代理，无法访问 Google 服务。\n2. API Key 未配置或额度受限。";
                 document.getElementById('modalOverlay').classList.remove('hidden'); 
                 setTimeout(() => { document.getElementById('aiAnswerModal').style.transform = 'translateY(0)'; }, 10);
-            } finally { document.getElementById('loadingOverlay').classList.add('hidden'); }
+            } finally { 
+                clearInterval(textInterval);
+                document.getElementById('loadingOverlay').classList.add('hidden'); 
+            }
         }
         function handleAISearch(e) { if(e.key === 'Enter') triggerAISearch(); }
 
@@ -586,13 +622,26 @@
             const f = new FormData(document.getElementById('healthForm')); const vals = ['emotion','physical','digestion','temperature','complexion'].map(k => f.get(k));
             if(vals.some(v => !v)) return showToast("请完成五诊");
             document.getElementById('loadingOverlay').classList.remove('hidden'); document.getElementById('loadingOverlay').classList.add('flex');
-            document.getElementById('loadingTitle').innerText = '老中医拟方中'; document.getElementById('loadingDesc').innerText = '调和阴阳，排布一日膳缘...';
+            document.getElementById('loadingTitle').innerText = '老中医拟方中'; 
+            
+            // ====== 优化点 2：加入“动态话术”安抚等待焦虑 ======
+            let loadingTexts = ["正在切脉问诊...", "翻阅《黄帝内经》...", "分析形神状态...", "调和阴阳气血...", "排布一日膳缘..."];
+            let loadingIdx = 0;
+            document.getElementById('loadingDesc').innerText = loadingTexts[0];
+            let textInterval = setInterval(() => {
+                loadingIdx = (loadingIdx + 1) % loadingTexts.length;
+                document.getElementById('loadingDesc').innerText = loadingTexts[loadingIdx];
+            }, 1200); // 每 1.2 秒切换一次文字，大幅降低体感等待时间
+
             try {
                 if(!apiKey) throw new Error("Missing API Key");
                 const ep = `https://generativelanguage.googleapis.com/v1beta/models/${textModel}:generateContent?key=${apiKey}`;
                 const prompt = `用户五诊：情绪[${vals[0]}]，睡眠[${vals[1]}]，肠胃[${vals[2]}]，寒热[${vals[3]}]，气色[${vals[4]}]。生成一日定制食谱（含做法）。icon为Phosphor类名如'ph-bowl-food'。`;
                 const schema = { type: "OBJECT", properties: { constitutionName: { type: "STRING" }, desc: { type: "STRING" }, principle: { type: "STRING" }, chartData: { type: "ARRAY", items: { type: "NUMBER" } }, meals: { type: "ARRAY", items: { type: "OBJECT", properties: { type: { type: "STRING" }, name: { type: "STRING" }, effect: { type: "STRING" }, ingredients: { type: "STRING" }, recipe: { type: "STRING" }, culture: { type: "STRING" }, icon: { type: "STRING" } } } } }, required: ["constitutionName", "desc", "principle", "chartData", "meals"] };
-                const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema }}) });
+                
+                // 使用极致的超时体验：只重试 1 次，只要 10 秒没返回，直接截断降级！
+                const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema }}) }, 1, 10000);
+                
                 const data = JSON.parse(res.candidates[0].content.parts[0].text);
                 renderPlan(data); closeAssessment(); switchTab('plan');
             } catch (e) { 
@@ -610,7 +659,10 @@
                     ]
                 };
                 renderPlan(mockData); closeAssessment(); switchTab('plan');
-            } finally { document.getElementById('loadingOverlay').classList.add('hidden'); }
+            } finally { 
+                clearInterval(textInterval); // 确保不管成功失败，清理定时器
+                document.getElementById('loadingOverlay').classList.add('hidden'); 
+            }
         }
 
         function renderPlan(d) {
