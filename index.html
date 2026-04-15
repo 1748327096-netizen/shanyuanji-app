@@ -110,7 +110,7 @@
             </div>
 
             <div class="px-5 py-4 space-y-6">
-                <!-- 1. 海报轮播图：恢复三张，并添加外层跳转交互 -->
+                <!-- 1. 海报轮播图 -->
                 <div class="carousel-container shadow-floating">
                     <div class="carousel-track hide-scroll" id="homeCarousel">
                         <!-- 海报 1 -->
@@ -147,7 +147,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- 海报 3 (恢复) -->
+                        <!-- 海报 3 -->
                         <div class="carousel-slide aspect-square flex items-center text-white relative bg-[#8C3A3A] cursor-pointer" onclick="simulateNavigation('情志疗愈', '正在进入禅意空间...')">
                             <div id="bg-carousel-3" class="absolute inset-0 bg-cover bg-center z-0 transition-transform duration-1000 hover:scale-105" style="background-image: url('https://images.unsplash.com/photo-1576092762791-dd9e2220afa1?q=80&w=800&auto=format&fit=crop');"></div>
                             <div class="img-overlay z-0"></div>
@@ -168,7 +168,7 @@
                     <div class="carousel-dots" id="carouselDots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
                 </div>
 
-                <!-- 2. 金刚区：改回圆角矩形，流式等比分布，增加呼吸感间距 -->
+                <!-- 2. 金刚区 -->
                 <div class="flex justify-between items-start gap-[10px]">
                     <div class="flex flex-col items-center gap-1.5 active:scale-95 transition-transform cursor-pointer flex-1" onclick="simulateNavigation('膳食养生')">
                         <div class="w-full aspect-square max-h-[56px] rounded-[14px] bg-gradient-to-b from-[#FFFdfa] to-[#F8F4EB] border border-[#E8DCC8]/70 flex items-center justify-center text-secondary text-[22px] shadow-sm"><i class="ph-light ph-bowl-food"></i></div>
@@ -202,7 +202,7 @@
                     </div>
                 </div>
 
-                <!-- 4. 推荐列表：接入详尽弹窗 -->
+                <!-- 4. 推荐列表 -->
                 <div>
                     <div class="flex justify-between items-end mb-4">
                         <h3 class="font-serif font-bold text-[16px] flex items-center gap-1.5 tracking-widest"><i class="ph-light ph-leaf text-secondary text-[18px]"></i> 节气食单</h3>
@@ -238,7 +238,7 @@
             </div>
         </div>
 
-        <!-- ================= 2. PLAN VIEW (不变) ================= -->
+        <!-- ================= 2. PLAN VIEW ================= -->
         <div id="tab-plan" class="view-content hide-scroll">
             <div class="sticky top-0 z-30 bg-[#F8F4EB]/90 backdrop-blur-md px-5 pt-8 pb-3 border-b border-[#E8DCC8]/40 text-center"><h1 class="text-[18px] font-serif font-bold tracking-widest text-textDark">专属方略</h1></div>
             <div id="planEmptyState" class="flex flex-col items-center justify-center h-[70vh] text-center px-8">
@@ -263,13 +263,13 @@
             </div>
         </div>
 
-        <!-- ================= 3. DISCOVER VIEW (不变) ================= -->
+        <!-- ================= 3. DISCOVER VIEW ================= -->
         <div id="tab-discover" class="view-content hide-scroll relative">
             <div class="sticky top-0 z-30 bg-[#F8F4EB]/90 backdrop-blur-md px-5 pt-8 pb-3 border-b border-[#E8DCC8]/40 text-center">
                 <h1 class="text-[18px] font-serif font-bold tracking-widest text-textDark">传承典籍</h1>
             </div>
             <div class="px-5 py-5 space-y-6">
-                <!-- Hero：使用更优美的 4:3 -->
+                <!-- Hero -->
                 <div class="relative rounded-[20px] overflow-hidden shadow-sm border border-[#E8DCC8]/50 cursor-pointer active:scale-[0.98] transition-transform" onclick="openHerbScanner()">
                     <div class="aspect-[4/3] bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1552611052-33e04de081de?q=80&w=800&auto=format&fit=crop');"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#2C2622]/90 via-[#2C2622]/20 to-transparent pointer-events-none"></div>
@@ -308,9 +308,8 @@
             </div>
         </div>
 
-        <!-- ================= 4. PROFILE VIEW (重构：缩短头部，丰富下半部) ================= -->
+        <!-- ================= 4. PROFILE VIEW ================= -->
         <div id="tab-profile" class="view-content hide-scroll relative">
-            <!-- 头部：高度压缩，内敛紧凑 -->
             <div class="bg-gradient-to-b from-[#3A2D2A] to-[#241C1A] pt-14 pb-16 px-6 relative overflow-hidden text-[#FCFAF5]">
                 <div class="absolute right-[-20px] bottom-[-20px] text-[160px] font-serif opacity-[0.03] select-none font-bold">静</div>
                 <div class="flex items-center gap-4 relative z-10">
@@ -322,7 +321,6 @@
                 </div>
             </div>
             
-            <!-- 数据面板更加轻盈 -->
             <div class="px-5 relative z-20 -mt-8 mb-5">
                 <div class="bg-white/95 backdrop-blur-md rounded-[16px] py-3 px-2 shadow-sm border border-[#E8DCC8]/50 flex justify-around items-center">
                     <div class="text-center cursor-pointer w-1/3" onclick="showToast('修行日记')"><p class="text-[16px] font-bold text-textDark font-serif mb-0.5">12</p><p class="text-[9px] text-textLight tracking-widest">修行日记</p></div>
@@ -334,7 +332,6 @@
             </div>
 
             <div class="px-5 pb-6 space-y-5">
-                <!-- 新增：我的体质模块 -->
                 <div class="bg-gradient-to-r from-[#FCFAF5] to-[#F1EBE0]/30 rounded-[16px] p-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] border border-[#E8DCC8]/60 flex items-center justify-between cursor-pointer active:scale-[0.98] transition-transform" onclick="switchTab('plan')">
                     <div>
                         <span class="text-[9px] bg-secondary/10 text-secondary px-1.5 py-0.5 rounded-sm font-serif tracking-widest mb-1.5 inline-block">系统评测</span>
@@ -369,7 +366,6 @@
                     </div>
                 </div>
 
-                <!-- 新增：近期常阅 -->
                 <div>
                     <h3 class="font-serif font-bold text-[14px] text-textDark tracking-widest mb-3">近期常阅</h3>
                     <div class="flex gap-3 overflow-x-auto hide-scroll pb-1">
@@ -437,7 +433,7 @@
 
         <div id="modalOverlay" class="absolute inset-0 bg-[#2C2622]/60 backdrop-blur-sm z-[120] hidden transition-opacity" onclick="closeModal()"></div>
         
-        <!-- Detail Sheet (适用于食单和AI排膳) -->
+        <!-- Detail Sheet -->
         <div id="detailModal" class="absolute bottom-0 w-full bg-[#F8F4EB] rounded-t-[28px] z-[130] transform translate-y-full transition-transform duration-400 flex flex-col max-h-[90vh] shadow-[0_-20px_60px_rgba(0,0,0,0.2)]">
             <div id="modalHeaderImg" class="w-full h-48 bg-cover bg-center rounded-t-[28px] relative bg-[#E8DCC8]">
                 <div class="card-overlay rounded-t-[28px]"></div>
@@ -475,8 +471,19 @@
 
     <!-- JS Logic -->
     <script>
-        let myChart = null; let currentMeals = []; let currentDishNameForImg = ""; let currentAudio = null;
-        const apiKey = "AIzaSyBlHxyAvKOJGV0gr53fxbYwNOzupZRkCKw"; 
+        // ==============================================
+        // ⚙️ 核心配置区 (部署到 GitHub 必须填写 API Key)
+        // ==============================================
+        const apiKey = "AIzaSyBlHxyAvKOJGV0gr53fxbYwNOzupZRkCKw"; // <--- 请将你的 API Key 填入双引号中！
+        
+        // （如果你用的是自己的 API Key，必须把 '-preview-09-2025' 删掉，只保留 "gemini-2.5-flash" 才能正常请求）
+        const textModel = "gemini-2.5-flash"; 
+        const imageModel = "imagen-4.0-generate-001";
+        // ==============================================
+
+        let myChart = null; 
+        let currentMeals = []; 
+        let currentDishNameForImg = ""; 
         let toastTimeout;
 
         function showToast(message) {
@@ -501,51 +508,35 @@
             const btn = document.getElementById(btnId); const container = document.getElementById(containerId);
             btn.innerHTML = '<i class="ph-light ph-spinner animate-spin"></i>'; btn.disabled = true;
             try {
-                const ep = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+                if(!apiKey) throw new Error("Missing API Key");
+                const ep = `https://generativelanguage.googleapis.com/v1beta/models/${imageModel}:predict?key=${apiKey}`;
                 const payload = { instances: [{ prompt: prompt + "，新国风，中式美学，精美细节，无文字" }], parameters: { sampleCount: 1 } };
                 const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+                if(!res.predictions) throw new Error("API Limit");
                 const url = `data:image/png;base64,${res.predictions[0].bytesBase64Encoded}`;
                 container.style.backgroundImage = `url('${url}')`; btn.style.display = 'none'; showToast('绘卷完成');
-            } catch(e) { btn.innerHTML = '重试'; btn.disabled = false; showToast('绘制失败'); }
+            } catch(e) { btn.innerHTML = '重试'; btn.disabled = false; showToast('绘制失败 (请检查是否配置了有效的 API Key)'); }
         }
 
         function generateDishImage() { generateImage(currentDishNameForImg + "，精美国风美食，微距，摄影感", 'modalHeaderImg', 'btn-modal-img'); }
 
-        async function playTTS(text, btnId) {
-    const btn = document.getElementById(btnId);
-    // 如果正在播放，则停止
-    if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-        btn.innerHTML = '<i class="ph-light ph-speaker-high"></i> 聆听';
-        return;
-    }
-    // 调起浏览器原生语音发音
-    const original = btn.innerHTML;
-    btn.innerHTML = '<i class="ph-light ph-spinner animate-spin"></i>';
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'zh-CN'; // 设置为中文
-    utterance.rate = 0.9;     // 语速稍微放慢，更有老中医的感觉
-    
-    utterance.onend = () => { btn.innerHTML = original; };
-    window.speechSynthesis.speak(utterance);
-    
-    btn.innerHTML = '<i class="ph-light ph-speaker-none"></i> 停止';
-}
-            } catch (e) { showToast("发声失败"); btn.innerHTML = original; } finally { btn.disabled = false; }
-        }
-
-        function pcmToWav(pcm, rate) {
-            const size = pcm.byteLength; const buf = new ArrayBuffer(44 + size); const view = new DataView(buf);
-            const wStr = (o, s) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
-            wStr(0, 'RIFF'); view.setUint32(4, 36 + size, true); wStr(8, 'WAVE'); wStr(12, 'fmt ');
-            view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
-            view.setUint32(24, rate, true); view.setUint32(28, rate * 2, true); view.setUint16(32, 2, true); view.setUint16(34, 16, true);
-            wStr(36, 'data'); view.setUint32(40, size, true); new Uint8Array(buf, 44).set(new Uint8Array(pcm)); return buf;
-        }
-        function base64ToArrayBuffer(b64) {
-            const bin = window.atob(b64); const bytes = new Uint8Array(bin.length);
-            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i); return bytes.buffer;
+        // 将语音替换为原生且免费的浏览器语音引擎 (防报错)
+        function playTTS(text, btnId) {
+            const btn = document.getElementById(btnId);
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                btn.innerHTML = '<i class="ph-light ph-speaker-high"></i> 聆听';
+                return;
+            }
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="ph-light ph-spinner animate-spin"></i>';
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            utterance.rate = 0.9;
+            utterance.onend = () => { btn.innerHTML = original; };
+            utterance.onerror = () => { btn.innerHTML = original; showToast("语音播放中断"); };
+            window.speechSynthesis.speak(utterance);
+            btn.innerHTML = '<i class="ph-light ph-speaker-none"></i> 停止';
         }
 
         async function identifyHerb(input) {
@@ -553,9 +544,10 @@
             document.getElementById('loadingOverlay').classList.remove('hidden'); document.getElementById('loadingOverlay').classList.add('flex');
             document.getElementById('loadingTitle').innerText = '慧眼识珠...'; document.getElementById('loadingDesc').innerText = '正在为您辨认本草...';
             try {
+                if(!apiKey) throw new Error("Missing API Key");
                 const reader = new FileReader();
                 const b64 = await new Promise(r => { reader.onloadend = () => r(reader.result.split(',')[1]); reader.readAsDataURL(input.files[0]); });
-                const ep = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+                const ep = `https://generativelanguage.googleapis.com/v1beta/models/${textModel}:generateContent?key=${apiKey}`;
                 const payload = {
                     contents: [{ role: "user", parts: [{ text: "你是一位中医专家，请辨识图中草药，介绍名字和功效，约100字。" }, { inlineData: { mimeType: input.files[0].type, data: b64 } }] }],
                     generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { title: { type: "STRING" }, tag: { type: "STRING" }, content: { type: "STRING" } }, required: ["title", "tag", "content"] } }
@@ -564,7 +556,7 @@
                 const ans = JSON.parse(res.candidates[0].content.parts[0].text);
                 document.getElementById('aiAnswerTitle').innerText = ans.title; document.getElementById('aiAnswerTag').innerText = ans.tag; document.getElementById('aiAnswerContent').innerText = ans.content;
                 document.getElementById('modalOverlay').classList.remove('hidden'); setTimeout(() => { document.getElementById('aiAnswerModal').style.transform = 'translateY(0)'; }, 10);
-            } catch (e) { showToast("识别失败"); } finally { document.getElementById('loadingOverlay').classList.add('hidden'); input.value=''; }
+            } catch (e) { showToast("识别失败 (请检查是否配置了有效的 API Key)"); } finally { document.getElementById('loadingOverlay').classList.add('hidden'); input.value=''; }
         }
 
         function switchTab(id) {
@@ -577,7 +569,6 @@
         function closeAssessment() { document.getElementById('assessmentOverlay').style.transform = 'translateY(100%)'; }
         function openHerbScanner() { document.getElementById('herbImageInput').click(); }
 
-        // ====== 新增：打开单品详情弹窗 ======
         function openDishModal(name, type, effect, ingredients, recipe, imgUrl, icon) {
             currentDishNameForImg = name;
             document.getElementById('modalIcon').className = `ph-light ${icon}`;
@@ -598,13 +589,14 @@
             document.getElementById('loadingOverlay').classList.remove('hidden'); document.getElementById('loadingOverlay').classList.add('flex');
             document.getElementById('loadingTitle').innerText = '翻阅典籍中...'; document.getElementById('loadingDesc').innerText = '检索中医智慧';
             try {
-                const ep = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+                if(!apiKey) throw new Error("Missing API Key");
+                const ep = `https://generativelanguage.googleapis.com/v1beta/models/${textModel}:generateContent?key=${apiKey}`;
                 const payload = { contents: [{ parts: [{ text: `中医问答：${q}。解答温暖专业，150字内。` }] }], generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { title: { type: "STRING" }, tag: { type: "STRING" }, content: { type: "STRING" } }, required: ["title", "tag", "content"] } } };
                 const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
                 const ans = JSON.parse(res.candidates[0].content.parts[0].text);
                 document.getElementById('aiAnswerTitle').innerText = ans.title; document.getElementById('aiAnswerTag').innerText = ans.tag; document.getElementById('aiAnswerContent').innerText = ans.content;
                 document.getElementById('modalOverlay').classList.remove('hidden'); setTimeout(() => { document.getElementById('aiAnswerModal').style.transform = 'translateY(0)'; }, 10);
-            } catch (e) { showToast("解答失败"); } finally { document.getElementById('loadingOverlay').classList.add('hidden'); }
+            } catch (e) { showToast("解答失败 (请检查是否配置了有效的 API Key)"); } finally { document.getElementById('loadingOverlay').classList.add('hidden'); }
         }
         function handleAISearch(e) { if(e.key === 'Enter') triggerAISearch(); }
 
@@ -614,13 +606,14 @@
             document.getElementById('loadingOverlay').classList.remove('hidden'); document.getElementById('loadingOverlay').classList.add('flex');
             document.getElementById('loadingTitle').innerText = '老中医拟方中'; document.getElementById('loadingDesc').innerText = '调和阴阳，排布一日膳缘...';
             try {
-                const ep = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+                if(!apiKey) throw new Error("Missing API Key");
+                const ep = `https://generativelanguage.googleapis.com/v1beta/models/${textModel}:generateContent?key=${apiKey}`;
                 const prompt = `用户五诊：情绪[${vals[0]}]，睡眠[${vals[1]}]，肠胃[${vals[2]}]，寒热[${vals[3]}]，气色[${vals[4]}]。生成一日定制食谱（含做法）。icon为Phosphor类名如'ph-bowl-food'。`;
                 const schema = { type: "OBJECT", properties: { constitutionName: { type: "STRING" }, desc: { type: "STRING" }, principle: { type: "STRING" }, chartData: { type: "ARRAY", items: { type: "NUMBER" } }, meals: { type: "ARRAY", items: { type: "OBJECT", properties: { type: { type: "STRING" }, name: { type: "STRING" }, effect: { type: "STRING" }, ingredients: { type: "STRING" }, recipe: { type: "STRING" }, culture: { type: "STRING" }, icon: { type: "STRING" } } } } }, required: ["constitutionName", "desc", "principle", "chartData", "meals"] };
                 const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema }}) });
                 const data = JSON.parse(res.candidates[0].content.parts[0].text);
                 renderPlan(data); closeAssessment(); switchTab('plan');
-            } catch (e) { showToast("拟方失败，请重试"); } finally { document.getElementById('loadingOverlay').classList.add('hidden'); }
+            } catch (e) { showToast("拟方失败 (请检查是否配置了有效的 API Key)"); } finally { document.getElementById('loadingOverlay').classList.add('hidden'); }
         }
 
         function renderPlan(d) {
@@ -638,28 +631,26 @@
             myChart = new Chart(ctx, { type: 'radar', data: { labels: ['神', '阳', '脾', '阴', '火'], datasets: [{ data: vals, backgroundColor: 'rgba(140, 58, 58, 0.05)', borderColor: 'rgba(140, 58, 58, 0.6)', pointBackgroundColor: '#FCFAF5', pointBorderColor: '#8C3A3A', borderWidth: 1, pointRadius: 2 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { angleLines: { color: 'rgba(232, 220, 200, 0.4)' }, grid: { color: 'rgba(232, 220, 200, 0.4)', circular: true }, pointLabels: { font: { size: 9, family: "'Noto Serif SC', serif", weight: 'normal' }, color: '#8F8275' }, ticks: { display: false, min: 0, max: 100 } } }, plugins: { legend: { display: false }, tooltip: { enabled: false } } } });
         }
 
-        // ====== Plan 列表中调用的弹窗方法 ======
         function openPlanModal(idx) {
             const m = currentMeals[idx];
-            // 复用 openDishModal
             openDishModal(m.name, m.type, m.effect, m.ingredients, m.recipe, 'none', m.icon.startsWith('ph-') ? m.icon : 'ph-'+m.icon);
-            document.getElementById('modalCulture').innerText = m.culture; // 覆盖特定的 culture 文案
+            document.getElementById('modalCulture').innerText = m.culture; 
             if(document.getElementById('modalHeaderImg').style.backgroundImage === 'url("none")' || !document.getElementById('modalHeaderImg').style.backgroundImage) {
                 document.getElementById('modalHeaderImg').style.backgroundColor = '#E8DCC8';
             }
         }
         
-        function closeModal() { if (currentAudio) currentAudio.pause(); document.getElementById('detailModal').style.transform = 'translateY(100%)'; document.getElementById('aiAnswerModal').style.transform = 'translateY(100%)'; document.getElementById('assessmentOverlay').style.transform = 'translateY(100%)'; setTimeout(() => document.getElementById('modalOverlay').classList.add('hidden'), 300); }
+        function closeModal() { if (window.speechSynthesis.speaking) window.speechSynthesis.cancel(); document.getElementById('detailModal').style.transform = 'translateY(100%)'; document.getElementById('aiAnswerModal').style.transform = 'translateY(100%)'; document.getElementById('assessmentOverlay').style.transform = 'translateY(100%)'; setTimeout(() => document.getElementById('modalOverlay').classList.add('hidden'), 300); }
 
         function simulateNavigation(t, s) {
             const o = document.getElementById('transitionOverlay'); document.getElementById('transitionTitle').innerText = t; document.getElementById('transitionSubtitle').innerText = s || '正在为您展卷...';
             o.style.transform = 'translateY(0)'; setTimeout(() => { o.style.transform = 'translateY(100%)'; setTimeout(() => showToast(`「${t}」模块修缮中`), 400); }, 1500);
         }
 
-        // Carousel Auto
+        // 修复了后台轮播产生的 NaN 崩溃问题
         setInterval(() => {
             const track = document.getElementById('homeCarousel'); const dots = document.querySelectorAll('.dot');
-            if(track) {
+            if(track && track.clientWidth > 0) {
                 const nextIdx = (Math.round(track.scrollLeft / track.clientWidth) + 1) % dots.length;
                 track.scrollTo({ left: nextIdx * track.clientWidth, behavior: 'smooth' });
                 dots.forEach((d, i) => { if(i === nextIdx) d.classList.add('active'); else d.classList.remove('active'); });
