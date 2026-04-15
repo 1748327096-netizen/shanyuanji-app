@@ -512,18 +512,26 @@
         function generateDishImage() { generateImage(currentDishNameForImg + "，精美国风美食，微距，摄影感", 'modalHeaderImg', 'btn-modal-img'); }
 
         async function playTTS(text, btnId) {
-            const btn = document.getElementById(btnId);
-            if (currentAudio && !currentAudio.paused) { currentAudio.pause(); btn.innerHTML = '<i class="ph-light ph-speaker-high"></i> 聆听'; return; }
-            const original = btn.innerHTML; btn.innerHTML = '<i class="ph-light ph-spinner animate-spin"></i>'; btn.disabled = true;
-            try {
-                const ep = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-                const payload = { contents: [{ parts: [{ text: "以温润磁性的长者语调念诵：" + text }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } } } }, model: "gemini-2.5-flash-preview-tts" };
-                const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-                const inline = res.candidates[0].content.parts[0].inlineData;
-                const wav = pcmToWav(base64ToArrayBuffer(inline.data), 24000);
-                currentAudio = new Audio(URL.createObjectURL(new Blob([wav], { type: 'audio/wav' })));
-                currentAudio.onended = () => btn.innerHTML = original;
-                await currentAudio.play(); btn.innerHTML = '<i class="ph-light ph-speaker-none"></i> 停止';
+    const btn = document.getElementById(btnId);
+    // 如果正在播放，则停止
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        btn.innerHTML = '<i class="ph-light ph-speaker-high"></i> 聆听';
+        return;
+    }
+    // 调起浏览器原生语音发音
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i class="ph-light ph-spinner animate-spin"></i>';
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'zh-CN'; // 设置为中文
+    utterance.rate = 0.9;     // 语速稍微放慢，更有老中医的感觉
+    
+    utterance.onend = () => { btn.innerHTML = original; };
+    window.speechSynthesis.speak(utterance);
+    
+    btn.innerHTML = '<i class="ph-light ph-speaker-none"></i> 停止';
+}
             } catch (e) { showToast("发声失败"); btn.innerHTML = original; } finally { btn.disabled = false; }
         }
 
@@ -547,7 +555,7 @@
             try {
                 const reader = new FileReader();
                 const b64 = await new Promise(r => { reader.onloadend = () => r(reader.result.split(',')[1]); reader.readAsDataURL(input.files[0]); });
-                const ep = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                const ep = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
                 const payload = {
                     contents: [{ role: "user", parts: [{ text: "你是一位中医专家，请辨识图中草药，介绍名字和功效，约100字。" }, { inlineData: { mimeType: input.files[0].type, data: b64 } }] }],
                     generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { title: { type: "STRING" }, tag: { type: "STRING" }, content: { type: "STRING" } }, required: ["title", "tag", "content"] } }
@@ -590,7 +598,7 @@
             document.getElementById('loadingOverlay').classList.remove('hidden'); document.getElementById('loadingOverlay').classList.add('flex');
             document.getElementById('loadingTitle').innerText = '翻阅典籍中...'; document.getElementById('loadingDesc').innerText = '检索中医智慧';
             try {
-                const ep = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                const ep = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
                 const payload = { contents: [{ parts: [{ text: `中医问答：${q}。解答温暖专业，150字内。` }] }], generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { title: { type: "STRING" }, tag: { type: "STRING" }, content: { type: "STRING" } }, required: ["title", "tag", "content"] } } };
                 const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
                 const ans = JSON.parse(res.candidates[0].content.parts[0].text);
@@ -606,7 +614,7 @@
             document.getElementById('loadingOverlay').classList.remove('hidden'); document.getElementById('loadingOverlay').classList.add('flex');
             document.getElementById('loadingTitle').innerText = '老中医拟方中'; document.getElementById('loadingDesc').innerText = '调和阴阳，排布一日膳缘...';
             try {
-                const ep = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                const ep = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
                 const prompt = `用户五诊：情绪[${vals[0]}]，睡眠[${vals[1]}]，肠胃[${vals[2]}]，寒热[${vals[3]}]，气色[${vals[4]}]。生成一日定制食谱（含做法）。icon为Phosphor类名如'ph-bowl-food'。`;
                 const schema = { type: "OBJECT", properties: { constitutionName: { type: "STRING" }, desc: { type: "STRING" }, principle: { type: "STRING" }, chartData: { type: "ARRAY", items: { type: "NUMBER" } }, meals: { type: "ARRAY", items: { type: "OBJECT", properties: { type: { type: "STRING" }, name: { type: "STRING" }, effect: { type: "STRING" }, ingredients: { type: "STRING" }, recipe: { type: "STRING" }, culture: { type: "STRING" }, icon: { type: "STRING" } } } } }, required: ["constitutionName", "desc", "principle", "chartData", "meals"] };
                 const res = await fetchWithRetry(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema }}) });
